@@ -95,6 +95,7 @@ class Viewer(object):
 
         self.img_apple = pyglet.resource.image("apple.png")
         self.img_agent = pyglet.resource.image("agent.png")
+        self.img_arrow = pyglet.resource.image("agent.png")
 
     def close(self):
         self.window.close()
@@ -121,6 +122,9 @@ class Viewer(object):
         self._draw_food(env)
         self._draw_players(env)
 
+        # draw plan
+        self._draw_plan()
+
         if return_rgb_array:
             buffer = pyglet.image.get_buffer_manager().get_color_buffer()
             image_data = buffer.get_image_data()
@@ -129,6 +133,10 @@ class Viewer(object):
             arr = arr[::-1, :, 0:3]
         self.window.flip()
         return arr if return_rgb_array else self.isopen
+    
+    def _draw_plan(self):
+        # print("Plan not implemented yet")
+        pass
 
     def _draw_grid(self):
         batch = pyglet.graphics.Batch()
@@ -193,6 +201,7 @@ class Viewer(object):
 
     def _draw_players(self, env):
         players = []
+        arrows = []
         batch = pyglet.graphics.Batch()
 
         for player in env.players:

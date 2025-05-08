@@ -57,6 +57,14 @@ class Player:
         else:
             return "Player"
 
+class Plan(object):
+    def __init__(self):
+        # List of possible plans
+        self._plan = []
+        # Associated probabilities for each plan
+        self._probability = []
+    
+
 
 class ForagingEnv(gym.Env):
     """
@@ -180,6 +188,8 @@ class ForagingEnv(gym.Env):
         self.viewer = None
 
         self.n_agents = len(self.players)
+        # For plotting plans with prbabiltity
+        self._plans = []
 
     def seed(self, seed=None):
         if seed is not None:
@@ -716,6 +726,11 @@ class ForagingEnv(gym.Env):
 
         self.viewer = Viewer((self.rows, self.cols))
         self._rendering_initialized = True
+
+    def set_plans(self, plans, probabilities):
+        # for player, plan in zip(self.players, plans):
+        #     player.controller = plan
+        pass
 
     def render(self):
         if not self._rendering_initialized:
