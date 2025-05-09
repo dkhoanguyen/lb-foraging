@@ -119,11 +119,13 @@ class Viewer(object):
         self.window.dispatch_events()
 
         self._draw_grid()
+
+        self._draw_plans(env)
+
         self._draw_food(env)
         self._draw_players(env)
 
         # draw plan
-        self._draw_plan()
 
         if return_rgb_array:
             buffer = pyglet.image.get_buffer_manager().get_color_buffer()
@@ -133,10 +135,6 @@ class Viewer(object):
             arr = arr[::-1, :, 0:3]
         self.window.flip()
         return arr if return_rgb_array else self.isopen
-    
-    def _draw_plan(self):
-        # print("Plan not implemented yet")
-        pass
 
     def _draw_grid(self):
         batch = pyglet.graphics.Batch()
@@ -219,6 +217,30 @@ class Viewer(object):
         batch.draw()
         for p in env.players:
             self._draw_badge(*p.position, p.level)
+
+    def _draw_plans(self, env):
+        cells = []
+        intensity = []
+
+        batch = pyglet.graphics.Batch()
+        for plan in env._plans:
+            probability = plan.probability
+            for path in plan.plans:
+                for i in range(1,len(path) - 1,1):
+                    intensity.append(probability)
+                    row, col = path[i]
+                    rect = pyglet.shapes.Rectangle(
+                        x=(self.grid_size + 1) * col,
+                        y=self.height - (self.grid_size + 1) * (row + 1),
+                        width=self.grid_size,
+                        height=self.grid_size,
+                        color=(0, 100, 0),  # Green
+                        batch=batch,
+                    )
+                    rect.opacity = 255
+                    cells.append(rect)
+        batch.draw()
+            
 
     def _draw_badge(self, row, col, level):
         resolution = 6

@@ -2,7 +2,7 @@ from collections import namedtuple, defaultdict
 from enum import Enum
 from itertools import product
 import logging
-from typing import Iterable
+from typing import Iterable, List
 
 import gymnasium as gym
 from gymnasium.utils import seeding
@@ -60,12 +60,12 @@ class Player:
 class Plan(object):
     def __init__(self):
         # List of possible plans
-        self._plan = []
+        self.plans = []
+        # List of rewards for each plan
+        self.rewards = []
         # Associated probabilities for each plan
-        self._probability = []
+        self.probability = []
     
-
-
 class ForagingEnv(gym.Env):
     """
     A class that contains rules/actions for the game level-based foraging.
@@ -190,6 +190,9 @@ class ForagingEnv(gym.Env):
         self.n_agents = len(self.players)
         # For plotting plans with prbabiltity
         self._plans = []
+
+    def set_plans(self, plans: List[Plan]):
+        self._plans = plans
 
     def seed(self, seed=None):
         if seed is not None:
@@ -727,10 +730,10 @@ class ForagingEnv(gym.Env):
         self.viewer = Viewer((self.rows, self.cols))
         self._rendering_initialized = True
 
-    def set_plans(self, plans, probabilities):
+    def set_plans(self, plans: List[Plan]):
         # for player, plan in zip(self.players, plans):
         #     player.controller = plan
-        pass
+        self._plans = plans
 
     def render(self):
         if not self._rendering_initialized:
