@@ -14,7 +14,7 @@ actions_per_agent = [
 
 num_agents = len(actions_per_agent)
 T = 0.05
-iterations = 1
+iterations = 10
 samples_per_joint_action = 10
 alpha = 0.0015
 num_mc_samples = 10
@@ -37,7 +37,6 @@ softmax_optimizer = SoftmaxOptimizer(
     sim,
     actions_per_agent,
     T=T,
-    iterations=iterations,
     samples_per_joint_action=samples_per_joint_action,
     num_mc_samples=num_mc_samples,
     seed=42
@@ -48,10 +47,9 @@ nn_utilities = []
 softmax_utilities = []
 
 for it in range(iterations):
-    print(f"Iteration {it}")
+    # print(f"Iteration {it}")
     q_next = []
     for i_agent in range(num_agents):
-        print(f"Agent {i_agent} optimization")
         # Aggregate q of the other agents
         other_q = []
         for j_agent in range(num_agents):
@@ -60,18 +58,10 @@ for it in range(iterations):
         # Plan actions give other agents' actions and probabilities
         q_i = q[i_agent].copy()
         # Run 1 step optimization
-        # print("q: ",q)
-        output = nn_optimizer.optimize(q, i_agent, iterations=10)
-        # print("output: ",output)
-        # Update q and broadcast
-        print(output[i_agent])
+        output = softmax_optimizer.optimize(q, i_agent, iterations=1)
+        # output = nn_optimizer.optimize(q, i_agent, iterations=1)
+        # print(output[i_agent])
         q_next.append(output[i_agent])
-        # print(q_next)
-        # print(q_next)
-        # print()
-    # print()
-    # print("q: ", q)
-    # print("q_next: ", q_next)
     q = q_next.copy()
-    # print(q)
-    print()
+for p in q:
+    print(p)

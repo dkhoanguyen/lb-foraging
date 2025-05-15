@@ -18,7 +18,7 @@ class UtilitySimulator:
     def _generate_random_utilities(self):
         base_utility = {
             (0, 0): 0,
-            (0, 1): 20,
+            (0, 1): 0,
             (1, 0): 20,
             (1, 1): 20,
         }

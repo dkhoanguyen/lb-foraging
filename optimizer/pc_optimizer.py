@@ -138,20 +138,12 @@ class PCOptimizer(Optimizer):
             # Expected utility if i_agent chooses action i deterministically
             E_G_given_i = self._monte_carlo_expected_util(q_all, i_agent, plan_i)
             delta_E = E_G_given_i - E_G
-            # print(f"delta_E: {delta_E}")
             grad = entropy_q + np.log(q_self[plan_i] + 1e-12) + delta_E / self._T
-            # print(f"grad: {grad}")
             new_q[plan_i] -= self._alpha * q_self[plan_i] * grad
-            # print(f"new_q[{plan_i}]: {new_q[plan_i]}")
-            # print()
         
         # Normalize to ensure new_q is a valid distribution
-        # print(f"new_q before normalization: {new_q}")
         new_q = np.maximum(new_q, 1e-8)
-        
         new_q /= np.sum(new_q)
-        # print(f"new_q: {new_q}")
-        # print()
         return new_q
 
     def optimize(self, q: List[np.ndarray], i_agent: int, iterations: int = 10):
@@ -165,24 +157,4 @@ class PCOptimizer(Optimizer):
         for it in range(iterations):
             # Update the distribution of the specified agent
             local_q[i_agent] = self._nearest_newton_update(local_q, i_agent)
-
-            # # Compute joint action probabilities and metrics
-            # joint_actions = list(product(*self._actions_per_agent))
-            # joint_probs = []
-            # for joint_action in joint_actions:
-            #     prob = 1.0
-            #     for i, a in enumerate(joint_action):
-            #         a_idx = self._actions_per_agent[i].index(a)
-            #         prob *= local_q[i][a_idx]
-            #     joint_probs.append(prob)
-
-            # # Calculate expected utility, entropy, and the objective
-            # expected_utility = sum(prob * G[joint_action] for prob, joint_action in zip(joint_probs, joint_actions))
-            # entropy_total = sum(self._compute_entropy(qi) for qi in local_q)
-            # objective = expected_utility + self._T * entropy_total
-
-            # # Log metrics for this iteration
-            # self._expected_utilities.append(expected_utility)
-            # self._total_entropies.append(entropy_total)
-            # self._objectives.append(objective)
         return local_q
