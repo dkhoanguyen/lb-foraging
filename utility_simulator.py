@@ -16,10 +16,12 @@ class UtilitySimulator:
         self.base_utility = self._generate_random_utilities()
 
     def _generate_random_utilities(self):
-        base_utility = {}
-        joint_action_space = itertools.product(*self.actions_per_agent)
-        for joint_action in joint_action_space:
-            base_utility[joint_action] = self.rng.uniform(0, 100)  # or other distribution
+        base_utility = {
+            (0, 0): 0,
+            (0, 1): 20,
+            (1, 0): 20,
+            (1, 1): 20,
+        }
         return base_utility
 
     def rollout(self, actions):
